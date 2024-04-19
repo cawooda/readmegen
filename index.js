@@ -5,7 +5,6 @@ const inquirer = require('inquirer');
 // TODO: Create an array of questions for user input
 
 
-
 const questions = [
     ["input", "What was your motivation?", "motivation"],
     ["input", "Why did you build this project?", "why"],
@@ -24,26 +23,27 @@ const questions = [
 class InputSession {
     constructor (questions) {
         this.questionList = questions.map((question)=>{
-            
                 return {
                     type:question[0],
                     message: question[1],
                     name: question[2],
                     choices: question[3]    
                 }
-            
-
         })
+        this.show();
     }
-
-    async show() {
-        this.answers = await inquirer.prompt(this.questionList);
+    showAnswers = function() {
+        console.log(this.response);
     }
-
-    printAnswers(){
-        console.log(this.answers);
+    show = async function () {
+        this.response = await inquirer.prompt(this.questionList);
+        this.showAnswers();
+        this.showLicense();
     }
-
+    
+    showLicense = function () {
+        console.log(this.response.license);
+    }
 }
 
 // TODO: Create a function to write README file
@@ -52,8 +52,6 @@ function writeToFile(fileName, data) {}
 // TODO: Create a function to initialize app
 async function init() {
     const userInput = new InputSession(questions);
-    await userInput.show();
-
 }
 
 // Function call to initialize app
