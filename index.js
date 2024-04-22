@@ -1,25 +1,24 @@
-// TODO: Include packages needed for this application
+
 const fs = require('fs');
 const inquirer = require('inquirer');
-
-// TODO: Create an array of questions for user input
-
+const generateMarkdown = require('./utils/generateMarkdown');
+const readmeFileName = 'README.md';
 
 const questions = [
-    ["input", "What was your motivation?", "motivation"],
-    ["input", "Why did you build this project?", "why"],
-    ["input", "What problem does it solve?","problem"],
-    ["input", "What did you learn?","learning"],
-    ["input", "What makes your project stand out?","standOut"], 
-    ["list", "License","license",[
-        "MIT",
-        "CC",
-        "OP",
-        "Other",
-    ]], 
+    ["input", "Email Address", "email"],
+    ["input", "GitHub Profile", "github"],
+    ["input", "Project Title", "title"],
+    ["input", "Project Description", "description"],
+    ["input", "Installation instructions:", "instructions"],
+    ["input", "Usage Information:", "usage"],
+    ["input", "Feature Information:", "features"],
+    ["input", "Guidelines for Contribution:", "guidelines"],
+    ["input", "Instgructions for Testing:", "testing"],
+    ["list", "License","license",generateMarkdown.getLicense()], 
 ];
 
-
+//input session is a class that when instantiated, shows a list of questions and stores their response
+// Its show method displays the questions and the processAnswers method writes the result of the answers as a readme file 
 class InputSession {
     constructor (questions) {
         this.questionList = questions.map((question)=>{
@@ -32,26 +31,23 @@ class InputSession {
         })
         this.show();
     }
-    showAnswers = function() {
-        console.log(this.response);
-    }
     show = async function () {
-        this.response = await inquirer.prompt(this.questionList);
-        this.showAnswers();
-        this.showLicense();
+        this.data = await inquirer.prompt(this.questionList);
+        console.log(this.data);
+        writeToFile(readmeFileName, generateMarkdown(this.data));
     }
     
-    showLicense = function () {
-        console.log(this.response.license);
-    }
 }
 
 // TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
+function writeToFile(fileName, data) {
+    fs.writeFile(readmeFileName,data,(err)=>console.log(err));
+}
 
 // TODO: Create a function to initialize app
 async function init() {
-    const userInput = new InputSession(questions);
+    const userInput = await new InputSession(questions);
+    
 }
 
 // Function call to initialize app
